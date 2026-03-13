@@ -89,7 +89,7 @@ export const authProvider: AuthProvider = {
   ...baseAuthProvider,
   resetPassword: async ({ email }: { email: string }) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://crm.adminsat.work/auth-callback.html",
+      redirectTo: "https://crm.episolve.com/auth-callback.html",
     });
     if (error) throw error;
   },

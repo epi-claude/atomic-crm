@@ -153,7 +153,7 @@ async function inviteUser(req: Request, currentUserSale: any) {
     }
     const { error: emailError } =
       await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-        redirectTo: "https://crm.adminsat.work/auth-callback.html",
+        redirectTo: "https://crm.episolve.com/auth-callback.html",
       });
 
     if (emailError) {
