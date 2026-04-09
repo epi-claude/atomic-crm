@@ -161,10 +161,11 @@ When a contact is suppressed:
 - `contacts.drip_unsubscribed = true` — they will never be re-enrolled in any campaign
 - Visible in the contact record sidebar with a red "suppressed" badge
 
-To manually override a suppression (e.g. a bounce was a temporary server error):
-1. Open the contact in Supabase dashboard → Table Editor → contacts
-2. Set `drip_unsubscribed = false`
-3. Re-enroll from the contact detail page
+To override a suppression (e.g. a bounce was a temporary server error):
+1. Open the contact detail page
+2. In the **Drip Campaigns** sidebar, find the suppressed enrollment
+3. Click the **↺ reset icon** next to the "suppressed" badge
+4. The contact will resume at the next 8am UTC send
 
 ---
 
