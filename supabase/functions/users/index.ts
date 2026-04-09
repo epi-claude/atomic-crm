@@ -66,6 +66,38 @@ async function updateSaleAvatar(user_id: string, avatar: string) {
   return sales.at(0);
 }
 
+async function resendInvite(req: Request, currentUserSale: any) {
+  if (!currentUserSale.administrator) {
+    return createErrorResponse(401, "Not Authorized");
+  }
+
+  const { sales_id } = await req.json();
+
+  const { data: sale, error: saleError } = await supabaseAdmin
+    .from("sales")
+    .select("email")
+    .eq("id", sales_id)
+    .single();
+
+  if (!sale || saleError) {
+    return createErrorResponse(404, "User not found");
+  }
+
+  const { error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
+    sale.email,
+    { redirectTo: "https://crm.episolve.com/auth-callback.html" },
+  );
+
+  if (error) {
+    console.error("resendInvite error:", error);
+    return createErrorResponse(500, "Failed to resend invitation");
+  }
+
+  return new Response(JSON.stringify({ data: { ok: true } }), {
+    headers: { "Content-Type": "application/json", ...corsHeaders },
+  });
+}
+
 async function inviteUser(req: Request, currentUserSale: any) {
   const { email, password, first_name, last_name, disabled, administrator } =
     await req.json();
@@ -180,6 +212,42 @@ async function inviteUser(req: Request, currentUserSale: any) {
   }
 }
 
+async function setPassword(req: Request, currentUserSale: any) {
+  if (!currentUserSale.administrator) {
+    return createErrorResponse(401, "Not Authorized");
+  }
+
+  const { sales_id, password } = await req.json();
+
+  if (!password || password.length < 8) {
+    return createErrorResponse(400, "Password must be at least 8 characters");
+  }
+
+  const { data: sale, error: saleError } = await supabaseAdmin
+    .from("sales")
+    .select("user_id")
+    .eq("id", sales_id)
+    .single();
+
+  if (!sale || saleError) {
+    return createErrorResponse(404, "User not found");
+  }
+
+  const { error } = await supabaseAdmin.auth.admin.updateUserById(
+    sale.user_id,
+    { password },
+  );
+
+  if (error) {
+    console.error("setPassword error:", error);
+    return createErrorResponse(500, "Failed to set password");
+  }
+
+  return new Response(JSON.stringify({ data: { ok: true } }), {
+    headers: { "Content-Type": "application/json", ...corsHeaders },
+  });
+}
+
 async function patchUser(req: Request, currentUserSale: any) {
   const {
     sales_id,
@@ -271,10 +339,18 @@ Deno.serve(async (req: Request) =>
         }
 
         if (req.method === "POST") {
+          const body = await req.clone().json().catch(() => ({}));
+          if (body.action === "resend_invite") {
+            return resendInvite(req, currentUserSale);
+          }
           return inviteUser(req, currentUserSale);
         }
 
         if (req.method === "PATCH") {
+          const body = await req.clone().json().catch(() => ({}));
+          if (body.action === "set_password") {
+            return setPassword(req, currentUserSale);
+          }
           return patchUser(req, currentUserSale);
         }
 

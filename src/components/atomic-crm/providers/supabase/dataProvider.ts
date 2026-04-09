@@ -170,6 +170,32 @@ const dataProviderWithCustomMethods = {
 
     return passwordUpdated;
   },
+  async salesResendInvite(id: Identifier) {
+    const { data, error } = await supabase.functions.invoke("users", {
+      method: "POST",
+      body: { action: "resend_invite", sales_id: id },
+    });
+    if (error) {
+      const details = await (async () => {
+        try { return (await error?.context?.json()) ?? {}; } catch { return {}; }
+      })();
+      throw new Error(details?.message || "Failed to resend invitation");
+    }
+    return data;
+  },
+  async salesSetPassword(id: Identifier, password: string) {
+    const { data, error } = await supabase.functions.invoke("users", {
+      method: "PATCH",
+      body: { action: "set_password", sales_id: id, password },
+    });
+    if (error) {
+      const details = await (async () => {
+        try { return (await error?.context?.json()) ?? {}; } catch { return {}; }
+      })();
+      throw new Error(details?.message || "Failed to set password");
+    }
+    return data;
+  },
   async unarchiveDeal(deal: Deal) {
     // get all deals where stage is the same as the deal to unarchive
     const { data: deals } = await baseDataProvider.getList<Deal>("deals", {
