@@ -1,7 +1,8 @@
-import { useGetManyReference, useRecordContext } from "ra-core";
+import { useGetManyReference, useNotify, useRecordContext, useUpdate } from "ra-core";
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Clock, Mail, XCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Clock, Mail, RotateCcw, XCircle } from "lucide-react";
 
 import type { Contact, DripEnrollment } from "../types";
 import { EnrollContactDialog } from "../campaigns/EnrollContactDialog";
@@ -15,6 +16,39 @@ const statusIcon = (e: DripEnrollment) => {
     return <Mail className="h-3.5 w-3.5 text-blue-500 shrink-0" />;
   return <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />;
 };
+
+function UnsuppressButton({ enrollment }: { enrollment: DripEnrollment }) {
+  const notify = useNotify();
+  const [update, { isPending }] = useUpdate();
+
+  const handleClick = () => {
+    update(
+      "drip_enrollments",
+      {
+        id: enrollment.id,
+        data: { suppressed: false, suppressed_reason: null },
+        previousData: enrollment,
+      },
+      {
+        onSuccess: () => notify("Suppression removed — contact will resume on next send", { type: "success" }),
+        onError: () => notify("Failed to remove suppression", { type: "error" }),
+      },
+    );
+  };
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground"
+      onClick={handleClick}
+      disabled={isPending}
+      title="Remove suppression"
+    >
+      <RotateCcw className="h-3 w-3" />
+    </Button>
+  );
+}
 
 export function ContactDripSection() {
   const record = useRecordContext<Contact>();
@@ -60,6 +94,7 @@ export function ContactDripSection() {
           >
             {e.suppressed ? "suppressed" : e.completed_at ? "done" : `step ${e.step}`}
           </Badge>
+          {e.suppressed && <UnsuppressButton enrollment={e} />}
         </div>
       ))}
       <EnrollContactDialog excludeCampaignIds={enrolledCampaignIds} />
