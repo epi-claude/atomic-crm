@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 import type { CampaignStep } from "../types";
 import { CampaignStepEditor } from "./CampaignStepEditor";
+import { SendTestEmailPanel } from "./SendTestEmailPanel";
 
 interface CampaignStepCardProps {
   step: CampaignStep;
@@ -138,26 +139,32 @@ export function CampaignStepCard({ step, isLast }: CampaignStepCardProps) {
                   placeholder="Email body — use {first_name} to personalise."
                 />
               </div>
-              <div className="flex gap-2 justify-end">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditing(false)}
-                >
-                  <X className="h-3.5 w-3.5 mr-1" />
-                  Cancel
-                </Button>
-                <Button size="sm" onClick={onSave} disabled={isPending}>
-                  <Save className="h-3.5 w-3.5 mr-1" />
-                  Save
-                </Button>
+              <div className="flex items-center justify-between gap-2">
+                <SendTestEmailPanel stepId={step.id} />
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditing(false)}
+                  >
+                    <X className="h-3.5 w-3.5 mr-1" />
+                    Cancel
+                  </Button>
+                  <Button size="sm" onClick={onSave} disabled={isPending}>
+                    <Save className="h-3.5 w-3.5 mr-1" />
+                    Save
+                  </Button>
+                </div>
               </div>
             </>
           ) : (
-            <div
-              className="prose prose-sm max-w-none text-sm"
-              dangerouslySetInnerHTML={{ __html: step.html_body }}
-            />
+            <div className="space-y-4">
+              <div
+                className="prose prose-sm max-w-none text-sm"
+                dangerouslySetInnerHTML={{ __html: step.html_body }}
+              />
+              <SendTestEmailPanel stepId={step.id} />
+            </div>
           )}
         </div>
       )}
