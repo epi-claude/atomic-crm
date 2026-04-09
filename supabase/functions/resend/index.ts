@@ -14,6 +14,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { supabaseAdmin } from "../_shared/supabaseAdmin.ts";
+import { verifySignature } from "../_shared/svix.ts";
 
 const webhookSecret = Deno.env.get("RESEND_WEBHOOK_SECRET");
 if (!webhookSecret) {
@@ -126,58 +127,6 @@ async function suppressEnrollmentAndContact(
   ]);
 }
 
-// Verifies the Svix-signed webhook payload from Resend.
-// See: https://resend.com/docs/dashboard/webhooks/introduction
-async function verifySignature(
-  headers: Headers,
-  rawBody: string,
-  secret: string,
-): Promise<Response | null> {
-  const svixId = headers.get("svix-id");
-  const svixTimestamp = headers.get("svix-timestamp");
-  const svixSignature = headers.get("svix-signature");
-
-  if (!svixId || !svixTimestamp || !svixSignature) {
-    return new Response("Missing Svix headers", { status: 401 });
-  }
-
-  // Reject webhooks older than 5 minutes
-  const ts = parseInt(svixTimestamp, 10);
-  if (isNaN(ts) || Math.abs(Date.now() / 1000 - ts) > 300) {
-    return new Response("Webhook timestamp out of range", { status: 401 });
-  }
-
-  // Secret is "whsec_<base64-encoded-bytes>"
-  const secretBytes = Uint8Array.from(
-    atob(secret.slice("whsec_".length)),
-    (c) => c.charCodeAt(0),
-  );
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    secretBytes,
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-
-  const signatureBytes = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(`${svixId}.${svixTimestamp}.${rawBody}`),
-  );
-  const computed = btoa(String.fromCharCode(...new Uint8Array(signatureBytes)));
-
-  // svix-signature header may contain multiple space-separated "v1,<sig>" values
-  const valid = svixSignature
-    .split(" ")
-    .some((sig) => sig === `v1,${computed}`);
-  if (!valid) {
-    return new Response("Invalid signature", { status: 401 });
-  }
-
-  return null;
-}
 
 interface ResendWebhookPayload {
   type: string;

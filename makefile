@@ -53,9 +53,11 @@ supabase-deploy:
 
 test:
 	npm test
+	deno test supabase/functions/_shared/hmac.test.ts supabase/functions/_shared/emailHelpers.test.ts supabase/functions/_shared/svix.test.ts
 
 test-ci:
 	CI=1 npm test
+	deno test supabase/functions/_shared/hmac.test.ts supabase/functions/_shared/emailHelpers.test.ts supabase/functions/_shared/svix.test.ts
 
 lint:
 	npm run lint

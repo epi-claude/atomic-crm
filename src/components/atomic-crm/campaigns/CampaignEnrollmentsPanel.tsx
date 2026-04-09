@@ -17,7 +17,7 @@ const statusIcon = (e: DripEnrollment) => {
   return <Clock className="h-4 w-4 text-muted-foreground shrink-0" />;
 };
 
-const enrollmentStatus = (e: DripEnrollment, totalSteps: number) => {
+export const enrollmentStatus = (e: DripEnrollment, totalSteps: number) => {
   if (e.suppressed) return e.suppressed_reason ?? "suppressed";
   if (e.completed_at) return "completed";
   return `step ${e.step} / ${totalSteps}`;

@@ -11,6 +11,11 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { supabaseAdmin } from "../_shared/supabaseAdmin.ts";
 import { hmacHex } from "../_shared/hmac.ts";
+import {
+  buildEmailHtml,
+  getPrimaryEmail,
+  interpolate,
+} from "../_shared/emailHelpers.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const RESEND_FROM_ADDRESS = Deno.env.get("RESEND_FROM_ADDRESS");
@@ -133,31 +138,6 @@ async function processEnrollment(enrollment: ReadyEnrollment, now: Date) {
   }
 }
 
-function buildEmailHtml(bodyFragment: string, unsubscribeUrl: string): string {
-  return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-</head>
-<body style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px 16px;color:#111;line-height:1.6;">
-  ${bodyFragment}
-  <p style="margin-top:40px;padding-top:16px;border-top:1px solid #eee;font-size:11px;color:#999;">
-    <a href="${unsubscribeUrl}" style="color:#999;">Unsubscribe</a>
-  </p>
-</body>
-</html>`;
-}
-
-function interpolate(template: string, firstName: string): string {
-  return template.replace(/\{first_name\}/g, firstName);
-}
-
-function getPrimaryEmail(emailJsonb: unknown): string | null {
-  if (!Array.isArray(emailJsonb) || emailJsonb.length === 0) return null;
-  const work = emailJsonb.find((e: { type?: string }) => e.type === "Work");
-  return ((work ?? emailJsonb[0]) as { email?: string })?.email ?? null;
-}
 
 interface ReadyEnrollment {
   enrollment_id: number;
