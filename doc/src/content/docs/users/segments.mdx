@@ -1,0 +1,61 @@
+---
+title: Segments
+description: Build contact segments to target groups for drip campaign enrollment.
+---
+
+Segments are saved contact filters. They let you define a group of contacts by shared attributes — tags, status, company, industry, or LinkedIn presence — and then bulk-enroll that group into a drip campaign with a single click.
+
+## Navigating to Segments
+
+Click **Segments** in the left sidebar.
+
+## Creating a Segment
+
+Click **Create**. Give the segment a name and optional description, then use the **Filter Builder** to define which contacts belong to it.
+
+### Filter Builder
+
+Filters combine with AND logic — a contact must match every criterion you set.
+
+| Filter | How it works |
+|---|---|
+| **Status** | Match contacts by their CRM status (e.g. In contract, Prospect, Lost) |
+| **Tags** | Match contacts that have any of the selected tags |
+| **Companies** | Match contacts at one or more specific companies (searchable multi-select) |
+| **Industry sectors** | Match contacts whose company is in a selected sector |
+| **Has LinkedIn** | Match only contacts with a LinkedIn URL on file |
+
+You can combine multiple filters. For example: Status = Prospect + Tags includes "warm-lead" + Industry = SaaS.
+
+### Live Contact Count
+
+Below the filter builder, a live count shows how many contacts currently match your filters. This updates as you adjust the criteria — useful for sanity-checking before enrolling.
+
+## Viewing a Segment
+
+Click any segment in the list to open its detail page. The detail page shows:
+
+- A **Filter Summary** resolving company names, sector labels, and tag names in plain language
+- The **live contact count** for the current filter criteria
+- An **Enroll** button to enroll matching contacts into a campaign
+
+## Enrolling a Segment
+
+On the segment detail page, click **Enroll**. A dialog appears to select the target campaign. Only **Active** campaigns are available for enrollment.
+
+Click **Enroll** to confirm. The system enrolls every contact currently matching the segment's filters, skipping any contact already enrolled in that campaign. This makes re-running an enrollment safe — it will only pick up new contacts.
+
+:::note
+Enrollment is a snapshot at the time you click Enroll. Contacts added later who match the filters are not automatically enrolled — re-run the enrollment to pick them up.
+:::
+
+## Editing a Segment
+
+Click **Edit** on the segment detail page to adjust the filters or rename the segment. Changes to filters do not retroactively affect existing enrollments — they only affect future enrollment runs.
+
+## Segment Strategy Tips
+
+- **Use tags for intent signals** — tag contacts as "warm-lead", "event-attendee", or "inbound" to create precise, manageable segments.
+- **Sector targeting** — use the industry filter to send sector-specific messaging without creating separate contact lists.
+- **Combine company + status** — narrow to contacts at target accounts who are not yet in contract.
+- **Check count before enrolling** — the live count preview prevents accidentally enrolling thousands of contacts into the wrong campaign.

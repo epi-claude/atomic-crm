@@ -92,6 +92,8 @@ export default defineConfig({
             "users/inbound-email",
             "users/mobile-app",
             "users/mcp-server",
+            "users/drip-campaigns",
+            "users/segments",
           ],
         },
         {

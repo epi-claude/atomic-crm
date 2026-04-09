@@ -1,0 +1,91 @@
+---
+title: Drip Campaigns
+description: Create and manage multi-step email drip campaigns in epiSolve CRM.
+---
+
+Drip campaigns let you send a sequence of automated emails to contacts over time. Each campaign is made up of steps — individual emails sent at configurable intervals. Contacts are enrolled via segments, and the system tracks every delivery, open, click, bounce, and unsubscribe.
+
+## Navigating to Campaigns
+
+Click **Campaigns** in the left sidebar. The campaign list shows all campaigns with their status badge (Draft, Active, Paused, Archived).
+
+## Creating a Campaign
+
+Click **Create** in the top right.
+
+- **Name** — the internal label for this campaign
+- **Slug** — a URL-safe identifier (auto-derived from the name, editable)
+- **Description** — optional context for your team
+- **Status** — start with **Draft** while building steps; switch to **Active** when ready to send
+
+Save to open the campaign detail page.
+
+## Managing Steps
+
+Each step is one email in the sequence. Open the **Steps** tab on the campaign detail page.
+
+### Editing a Step
+
+Click any step row to expand it, then click the **pencil icon** to enter edit mode.
+
+- **Subject** — the email subject line. Use `{first_name}` to personalise.
+- **Delay (days)** — how many days after the previous step this email sends. Set to `0` for the first step to send on the day of enrollment.
+- **Body** — a rich-text editor (bold, italic, links, lists). Use `{first_name}` anywhere in the body too.
+
+Click **Save** to commit changes, or **Cancel** to discard.
+
+### Adding a Step
+
+Click **Add step** below the step list. A new step is appended with a 7-day delay and blank subject/body. Edit it immediately.
+
+:::tip[Step count guidance]
+Click the **ⓘ** icon next to Add step to see best-practice guidance on campaign length and spacing. The sweet spot for B2B outreach is **4–6 steps**. A warning appears at 6+ steps; adding is disabled at 8.
+:::
+
+### Deleting a Step
+
+Only the **last step** can be deleted (to avoid gaps in active enrollments). A trash icon appears on the final step when there is more than one step. Click it and confirm the inline prompt.
+
+### Sending a Test Email
+
+While editing a step — or with a step expanded in read-only view — a **Send test email** panel appears at the bottom. Enter (or edit) a recipient address and click **Send test**. The address is remembered for future test sends. The test email arrives with a `[TEST]` prefix in the subject and a yellow banner so it's clearly identifiable.
+
+## Analytics
+
+The campaign detail page shows a header with six live metrics:
+
+| Tile | What it measures |
+|---|---|
+| Enrolled | Total contacts enrolled in this campaign |
+| Delivered | Emails confirmed delivered by Resend |
+| Open rate | Unique opens ÷ delivered |
+| Click rate | Unique clicks ÷ delivered |
+| Completed | Contacts who finished all steps |
+| Suppressed | Contacts removed due to bounce, complaint, or unsubscribe |
+
+These update in real time as email events arrive from Resend.
+
+## Enrollments Tab
+
+The **Enrollments** tab lists every enrolled contact with their current status:
+
+- **Active (step N)** — in the campaign, waiting for step N to send
+- **Completed** — finished all steps
+- **Suppressed** — removed (with reason shown on hover)
+
+Each row also shows a mini delivery summary: number of emails sent (✉), opened (👁), and clicked (🖱) for that contact.
+
+## Cloning a Campaign
+
+To duplicate an existing campaign (e.g. to reuse copy for a different audience), click **Clone** in the campaign header. A dialog pre-fills the name as "Copy of [original name]" with a derived slug. Edit either field, then click **Clone**. The new campaign is created as Draft with all steps copied, and you are redirected to it immediately.
+
+## Campaign Statuses
+
+| Status | Meaning |
+|---|---|
+| Draft | Being built — drip sender skips this campaign |
+| Active | Live — drip sender processes enrollments daily |
+| Paused | Temporarily stopped — no new sends until Active again |
+| Archived | Retired — kept for reference, not processed |
+
+Change status via the **Edit** button on the campaign detail page.
