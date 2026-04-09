@@ -10,10 +10,11 @@ Drip Enrollments (DB)
 drip-sender (Edge Function)
     ↓  sends via Resend API
 Recipient inbox
-    ↓  bounce / complaint / unsubscribe webhook
+    ↓  delivered / opened / clicked / bounce / complaint / unsubscribe webhook
 resend (Edge Function)
-    ↓  suppresses contact globally
-CRM contact record
+    ↓  stores event in email_events table
+    ↓  suppresses contact on bounce / complaint / unsubscribe
+CRM — Campaigns → Enrollments tab shows live stats
 ```
 
 **What runs automatically:** The drip sender fires once per day at 8am UTC. It finds every enrollment whose next step is due, sends the email, and advances the step counter. You don't need to do anything once contacts are enrolled.
@@ -113,11 +114,19 @@ Or from the Supabase dashboard: **Edge Functions → drip-sender → Test**.
 ### Per campaign
 **Campaigns → [campaign name] → Enrollments tab**
 
-Shows every enrolled contact with:
-- 🕐 Pending (enrolled, not yet sent)
-- ✉️ Active (at least one step sent)
-- ✅ Completed (all steps sent)
-- ✗ Suppressed (bounced, complained, or unsubscribed)
+Shows every enrolled contact with status and live engagement stats:
+
+| Icon | Meaning |
+|------|---------|
+| 🕐 | Pending — enrolled, not yet sent |
+| ✉️ | Active — at least one step sent |
+| ✅ | Completed — all steps sent |
+| ✗ | Suppressed — bounced, complained, or unsubscribed |
+
+Inline stats next to each enrollment:
+- `✉ N` — emails delivered
+- `👁 N` — times opened
+- `🖱 N` — links clicked
 
 ### Per contact
 Open the contact → **Drip Campaigns** aside section shows:
@@ -129,36 +138,28 @@ Open the contact → **Drip Campaigns** aside section shows:
 
 ## 6. Reporting — Opens, Clicks, Delivery
 
-**Our database only tracks suppression events** (bounce, complaint, unsubscribe). Opens and clicks are not stored in the CRM — they live in Resend.
+All delivery events are stored directly in the CRM. No need to visit Resend.
 
-### Where to look
+### In the CRM
 
-**Resend dashboard → [resend.com/emails](https://resend.com/emails)**
+**Campaigns → [name] → Enrollments tab** — per-contact delivery, open, and click counts.
 
-| What you want | Where |
-|---|---|
-| Individual email delivery status | Emails → search by recipient address |
-| Open / click events per email | Emails → click any email → Events timeline |
-| Bounce / complaint log | Emails → filter by status |
-| Domain-level stats | Domains → dm.e-dmm.com → Stats |
-| Aggregate campaign stats | Broadcasts (note: drip emails are transactional, not broadcasts — check per-email) |
+### Event types stored
 
-### Key Resend event types
 | Event | What it means | CRM effect |
 |---|---|---|
-| `email.sent` | Accepted by Resend | None |
-| `email.delivered` | Accepted by recipient server | None |
-| `email.opened` | Recipient opened | None (tracked in Resend only) |
-| `email.clicked` | Recipient clicked a link | None (tracked in Resend only) |
-| `email.bounced` | Hard bounce | Contact suppressed globally |
-| `email.complained` | Marked as spam | Contact suppressed globally |
-| `email.unsubscribed` | Clicked unsubscribe link | Contact suppressed globally |
+| `delivered` | Accepted by recipient server | Stored in email_events |
+| `opened` | Recipient opened the email | Stored in email_events, shown as 👁 count |
+| `clicked` | Recipient clicked a link | Stored in email_events, shown as 🖱 count |
+| `bounced` | Hard bounce | Stored + contact suppressed globally |
+| `complained` | Marked as spam | Stored + contact suppressed globally |
+| `unsubscribed` | Clicked unsubscribe link | Contact suppressed globally |
 
 ### Suppressed contacts
 
 When a contact is suppressed:
 - Their enrollment stops immediately (no further steps send)
-- `contacts.drip_unsubscribed = true` — they will never be re-enrolled in any campaign
+- They will never be re-enrolled in any campaign
 - Visible in the contact record sidebar with a red "suppressed" badge
 
 To override a suppression (e.g. a bounce was a temporary server error):
@@ -179,7 +180,6 @@ To override a suppression (e.g. a bounce was a temporary server error):
 | Create segment | Segments → New Segment |
 | Bulk enroll | Segments → [name] → Enroll in Campaign |
 | Enroll one contact | Contact detail → Drip Campaigns sidebar |
-| View enrollment status | Campaigns → [name] → Enrollments tab |
-| Check opens/clicks | resend.com/emails |
-| Manual send trigger | Edge Functions → drip-sender → Test |
-| Fix suppressed contact | Supabase Table Editor → contacts → drip_unsubscribed |
+| View enrollment status + stats | Campaigns → [name] → Enrollments tab |
+| Remove suppression | Contact detail → Drip Campaigns → ↺ icon |
+| Manual send trigger | Supabase dashboard → Edge Functions → drip-sender → Test |
