@@ -247,6 +247,7 @@ const DesktopAdmin = (props: CoreAdminProps) => {
       <Resource name="campaigns" {...campaigns} />
       <Resource name="campaign_steps" />
       <Resource name="drip_enrollments" />
+      <Resource name="email_events" />
       <Resource name="segments" {...segments} />
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -313,6 +314,7 @@ const MobileAdmin = (props: CoreAdminProps) => {
         <Resource name="campaigns" {...campaigns} />
         <Resource name="campaign_steps" />
         <Resource name="drip_enrollments" />
+        <Resource name="email_events" />
         <Resource name="segments" {...segments} />
       </Admin>
     </PersistQueryClientProvider>

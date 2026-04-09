@@ -5,10 +5,12 @@
 //   RESEND_WEBHOOK_SECRET  — signing secret from the Resend dashboard (whsec_...)
 //
 // Events handled:
-//   email.bounced      → suppress enrollment + globally suppress contact
-//   email.complained   → suppress enrollment + globally suppress contact
-//   email.unsubscribed → suppress enrollment + globally suppress contact
-//   all others         → acknowledged, no action
+//   email.delivered    → record delivery event
+//   email.opened       → record open event
+//   email.clicked      → record click event (with URL)
+//   email.bounced      → record event + suppress enrollment + globally suppress contact
+//   email.complained   → record event + suppress enrollment + globally suppress contact
+//   email.unsubscribed → record event + suppress enrollment + globally suppress contact
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { supabaseAdmin } from "../_shared/supabaseAdmin.ts";
@@ -50,26 +52,53 @@ Deno.serve(async (req) => {
     return new Response("Invalid enrollment_id tag", { status: 400 });
   }
 
+  const eventType = payload.type.replace("email.", ""); // "opened", "clicked", etc.
+  const emailId = payload.data?.email_id ?? null;
+  const url = (payload.data as { click?: { link?: string } })?.click?.link ?? null;
+
   switch (payload.type) {
+    case "email.delivered":
+    case "email.opened":
+    case "email.clicked":
+      await recordEvent(id, emailId, eventType, url);
+      break;
+
     case "email.bounced":
+      await recordEvent(id, emailId, "bounced", null);
       await suppressEnrollmentAndContact(id, "bounce");
       break;
 
     case "email.complained":
+      await recordEvent(id, emailId, "complained", null);
       await suppressEnrollmentAndContact(id, "complaint");
       break;
 
     case "email.unsubscribed":
+      await recordEvent(id, emailId, "unsubscribed", null);
       await suppressEnrollmentAndContact(id, "unsubscribe");
       break;
 
     default:
-      // delivered / opened / clicked — no state change needed
       break;
   }
 
   return new Response("OK");
 });
+
+async function recordEvent(
+  enrollmentId: number,
+  resendEmailId: string | null,
+  eventType: string,
+  url: string | null,
+) {
+  await supabaseAdmin.from("email_events").insert({
+    enrollment_id: enrollmentId,
+    resend_email_id: resendEmailId,
+    event_type: eventType,
+    occurred_at: new Date().toISOString(),
+    url,
+  });
+}
 
 async function suppressEnrollmentAndContact(
   enrollmentId: number,
@@ -155,6 +184,7 @@ interface ResendWebhookPayload {
   data: {
     email_id: string;
     tags?: Record<string, string>;
+    click?: { link?: string };
     [key: string]: unknown;
   };
 }

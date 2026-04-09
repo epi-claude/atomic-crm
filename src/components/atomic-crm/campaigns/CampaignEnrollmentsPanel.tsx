@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Clock, Mail, XCircle } from "lucide-react";
 
 import type { Campaign, DripEnrollment } from "../types";
+import { EnrollmentEventStats } from "./EnrollmentEventStats";
 
 const statusIcon = (e: DripEnrollment) => {
   if (e.suppressed)
@@ -55,22 +56,25 @@ const EnrollmentsList = ({ totalSteps }: { totalSteps: number }) => {
               {enrollmentStatus(enrollment, totalSteps)}
             </p>
           </div>
-          <Badge
-            variant={
-              enrollment.suppressed
-                ? "destructive"
+          <div className="flex items-center gap-2 shrink-0">
+            <EnrollmentEventStats enrollmentId={enrollment.id} />
+            <Badge
+              variant={
+                enrollment.suppressed
+                  ? "destructive"
+                  : enrollment.completed_at
+                    ? "default"
+                    : "secondary"
+              }
+              className="text-xs"
+            >
+              {enrollment.suppressed
+                ? "suppressed"
                 : enrollment.completed_at
-                  ? "default"
-                  : "secondary"
-            }
-            className="text-xs shrink-0"
-          >
-            {enrollment.suppressed
-              ? "suppressed"
-              : enrollment.completed_at
-                ? "done"
-                : "active"}
-          </Badge>
+                  ? "done"
+                  : "active"}
+            </Badge>
+          </div>
         </div>
       ))}
     </div>

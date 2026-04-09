@@ -210,6 +210,23 @@ export interface RAFile {
 
 export type AttachmentNote = RAFile;
 
+export type EmailEvent = {
+  enrollment_id: Identifier;
+  resend_email_id?: string | null;
+  event_type: "delivered" | "opened" | "clicked" | "bounced" | "complained" | "unsubscribed";
+  occurred_at: string;
+  url?: string | null;
+} & Pick<RaRecord, "id">;
+
+export type EnrollmentEventSummary = {
+  enrollment_id: Identifier;
+  delivered_count: number;
+  open_count: number;
+  click_count: number;
+  last_opened_at?: string | null;
+  last_clicked_at?: string | null;
+};
+
 export type Segment = {
   name: string;
   description?: string | null;
