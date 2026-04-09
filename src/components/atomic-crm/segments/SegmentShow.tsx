@@ -1,4 +1,4 @@
-import { ShowBase, useShowContext } from "ra-core";
+import { ShowBase, useShowContext, useGetMany } from "ra-core";
 import { EditButton } from "@/components/admin/edit-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,27 +7,54 @@ import type { Segment } from "../types";
 import type { FilterCriteria } from "./SegmentFilterBuilder";
 import { SegmentContactCount } from "./SegmentContactCount";
 import { SegmentEnrollDialog } from "./SegmentEnrollDialog";
+import { useConfigurationContext } from "../root/ConfigurationContext";
 
-const FilterSummary = ({
-  criteria,
-}: {
-  criteria: FilterCriteria;
-}) => {
-  const parts: string[] = [];
-  if (criteria.status) parts.push(`Status: ${criteria.status}`);
+const FilterSummary = ({ criteria }: { criteria: FilterCriteria }) => {
+  const { companySectors } = useConfigurationContext();
+
+  const { data: companies = [] } = useGetMany<{ id: number; name: string }>(
+    "companies",
+    { ids: criteria.company_ids ?? [] },
+    { enabled: (criteria.company_ids?.length ?? 0) > 0 },
+  );
+
+  const parts: { key: string; label: string }[] = [];
+
+  if (criteria.status)
+    parts.push({ key: "status", label: `Status: ${criteria.status}` });
+
   if ((criteria.tags?.length ?? 0) > 0)
-    parts.push(`${criteria.tags!.length} tag${criteria.tags!.length !== 1 ? "s" : ""}`);
-  if (criteria.has_linkedin === true) parts.push("Has LinkedIn");
-  if (criteria.has_linkedin === false) parts.push("No LinkedIn");
-  if (criteria.company_id) parts.push(`Company #${criteria.company_id}`);
+    parts.push({
+      key: "tags",
+      label: `${criteria.tags!.length} tag${criteria.tags!.length !== 1 ? "s" : ""}`,
+    });
 
-  if (!parts.length) return <p className="text-sm text-muted-foreground">No filters — matches all contacts.</p>;
+  companies.forEach((c) =>
+    parts.push({ key: `company-${c.id}`, label: c.name }),
+  );
+
+  (criteria.company_sectors ?? []).forEach((s) => {
+    const sector = companySectors.find((cs) => cs.value === s);
+    parts.push({ key: `sector-${s}`, label: sector?.label ?? s });
+  });
+
+  if (criteria.has_linkedin === true)
+    parts.push({ key: "linkedin-yes", label: "Has LinkedIn" });
+  if (criteria.has_linkedin === false)
+    parts.push({ key: "linkedin-no", label: "No LinkedIn" });
+
+  if (!parts.length)
+    return (
+      <p className="text-sm text-muted-foreground">
+        No filters — matches all contacts.
+      </p>
+    );
 
   return (
     <div className="flex flex-wrap gap-2">
       {parts.map((p) => (
-        <Badge key={p} variant="secondary">
-          {p}
+        <Badge key={p.key} variant="secondary">
+          {p.label}
         </Badge>
       ))}
     </div>
