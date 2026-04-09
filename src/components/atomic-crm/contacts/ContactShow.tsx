@@ -25,6 +25,7 @@ import { ContactTasksList } from "./ContactTasksList";
 import type { Contact } from "../types";
 import { Avatar } from "./Avatar";
 import { ContactAside } from "./ContactAside";
+import { ContactEmailHistory } from "./ContactEmailHistory";
 import { MobileBackButton } from "../misc/MobileBackButton";
 
 export const ContactShow = () => {
@@ -242,16 +243,34 @@ const ContactShowContent = () => {
                 </ReferenceField>
               </div>
             </div>
-            <ReferenceManyField
-              target="contact_id"
-              reference="contact_notes"
-              sort={{ field: "date", order: "DESC" }}
-              empty={
-                <NoteCreate reference="contacts" showStatus className="mt-4" />
-              }
-            >
-              <NotesIterator reference="contacts" showStatus />
-            </ReferenceManyField>
+
+            <Tabs defaultValue="notes" className="mt-4">
+              <TabsList>
+                <TabsTrigger value="notes">Notes</TabsTrigger>
+                <TabsTrigger value="emails">Emails</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="notes">
+                <ReferenceManyField
+                  target="contact_id"
+                  reference="contact_notes"
+                  sort={{ field: "date", order: "DESC" }}
+                  empty={
+                    <NoteCreate
+                      reference="contacts"
+                      showStatus
+                      className="mt-4"
+                    />
+                  }
+                >
+                  <NotesIterator reference="contacts" showStatus />
+                </ReferenceManyField>
+              </TabsContent>
+
+              <TabsContent value="emails" className="mt-4">
+                <ContactEmailHistory />
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
