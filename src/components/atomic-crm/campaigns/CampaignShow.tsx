@@ -14,6 +14,7 @@ import type { Campaign, CampaignStep } from "../types";
 import { CampaignStepCard } from "./CampaignStepCard";
 import { CampaignEnrollmentsPanel } from "./CampaignEnrollmentsPanel";
 import { CampaignAnalyticsHeader } from "./CampaignAnalyticsHeader";
+import { CampaignCloneDialog } from "./CampaignCloneDialog";
 
 const statusColors: Record<
   Campaign["status"],
@@ -58,6 +59,7 @@ const CampaignShowContent = () => {
           >
             {record.status}
           </Badge>
+          <CampaignCloneDialog />
           <EditButton label="Edit" />
         </div>
       </div>
