@@ -13,6 +13,7 @@ import { Layers, Users } from "lucide-react";
 import type { Campaign, CampaignStep } from "../types";
 import { CampaignStepCard } from "./CampaignStepCard";
 import { CampaignEnrollmentsPanel } from "./CampaignEnrollmentsPanel";
+import { CampaignAnalyticsHeader } from "./CampaignAnalyticsHeader";
 
 const statusColors: Record<
   Campaign["status"],
@@ -60,6 +61,9 @@ const CampaignShowContent = () => {
           <EditButton label="Edit" />
         </div>
       </div>
+
+      {/* Analytics */}
+      <CampaignAnalyticsHeader campaignId={record.id} />
 
       {/* Tabs */}
       <Tabs defaultValue="steps">
