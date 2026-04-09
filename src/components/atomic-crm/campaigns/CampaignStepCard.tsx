@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUpdate, useNotify } from "ra-core";
 import { useForm } from "react-hook-form";
-import { ChevronDown, ChevronUp, Pencil, Save, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil, Save, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,8 @@ import { SendTestEmailPanel } from "./SendTestEmailPanel";
 interface CampaignStepCardProps {
   step: CampaignStep;
   isLast: boolean;
+  canDelete?: boolean;
+  onDelete?: () => void;
 }
 
 interface StepFormValues {
@@ -23,9 +25,10 @@ interface StepFormValues {
   delay_days: number;
 }
 
-export function CampaignStepCard({ step, isLast }: CampaignStepCardProps) {
+export function CampaignStepCard({ step, isLast, canDelete, onDelete }: CampaignStepCardProps) {
   const [editing, setEditing] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const notify = useNotify();
   const [update, { isPending }] = useUpdate();
 
@@ -82,7 +85,45 @@ export function CampaignStepCard({ step, isLast }: CampaignStepCardProps) {
               Final
             </Badge>
           )}
-          {!editing && (
+          {!editing && canDelete && !confirmDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-destructive"
+              onClick={(e) => {
+                e.stopPropagation();
+                setConfirmDelete(true);
+              }}
+              title="Delete step"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          )}
+          {confirmDelete && (
+            <div
+              className="flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="text-xs text-destructive font-medium">Delete?</span>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={(e) => { e.stopPropagation(); setConfirmDelete(false); }}
+              >
+                No
+              </Button>
+            </div>
+          )}
+          {!editing && !confirmDelete && (
             <Button
               variant="ghost"
               size="sm"
@@ -95,7 +136,7 @@ export function CampaignStepCard({ step, isLast }: CampaignStepCardProps) {
               <Pencil className="h-3.5 w-3.5" />
             </Button>
           )}
-          {!editing &&
+          {!editing && !confirmDelete &&
             (expanded ? (
               <ChevronUp className="h-4 w-4 text-muted-foreground" />
             ) : (
