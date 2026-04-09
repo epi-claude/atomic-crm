@@ -1,6 +1,6 @@
 import { CreateBase, useGetIdentity } from "ra-core";
 import { useFormContext } from "react-hook-form";
-import { Form } from "@/components/admin/form";
+import { Form } from "ra-core";
 import { SaveButton } from "@/components/admin/form";
 import { FormToolbar } from "@/components/admin/simple-form";
 import { TextInput } from "@/components/admin/text-input";

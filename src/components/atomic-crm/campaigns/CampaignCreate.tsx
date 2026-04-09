@@ -1,5 +1,5 @@
 import { CreateBase, useGetIdentity } from "ra-core";
-import { Form } from "@/components/admin/form";
+import { Form } from "ra-core";
 import { Card, CardContent } from "@/components/ui/card";
 import { TextInput } from "@/components/admin/text-input";
 import { SelectInput } from "@/components/admin/select-input";
