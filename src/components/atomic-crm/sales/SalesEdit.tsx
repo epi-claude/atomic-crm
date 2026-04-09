@@ -68,7 +68,7 @@ export function SalesEdit() {
           </SimpleForm>
         </CardContent>
       </Card>
-      <SalesAdminActions />
+      <SalesAdminActions record={record as any} />
     </div>
   );
 }

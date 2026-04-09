@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useDataProvider, useGetIdentity, useNotify, useRecordContext } from "ra-core";
+import { useDataProvider, useGetIdentity, useNotify } from "ra-core";
 import { KeyRound, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CrmDataProvider } from "../providers/types";
 import type { Sale } from "../types";
 
-export function SalesAdminActions() {
-  const record = useRecordContext<Sale>();
+export function SalesAdminActions({ record }: { record: Sale | undefined }) {
   const { identity } = useGetIdentity();
   const dataProvider = useDataProvider<CrmDataProvider>();
   const notify = useNotify();
