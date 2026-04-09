@@ -8,6 +8,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { ImportPage } from "../misc/ImportPage";
+import { HelpDrawer } from "./HelpDrawer";
 
 const Header = () => {
   const { darkModeLogo, lightModeLogo, title } = useConfigurationContext();
@@ -89,6 +90,7 @@ const Header = () => {
               <div className="flex items-center">
                 <ThemeModeToggle />
                 <RefreshButton />
+                <HelpDrawer />
                 <UserMenu>
                   <ProfileMenu />
                   <CanAccess resource="sales" action="list">
