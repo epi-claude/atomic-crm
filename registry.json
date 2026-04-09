@@ -128,6 +128,38 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/segments/index.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentShow.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentList.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentFilterBuilder.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentEnrollDialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentEdit.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentCreate.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/segments/SegmentContactCount.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/sales/index.ts",
           "type": "registry:component"
         },
@@ -684,6 +716,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/contacts/ContactDripSection.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/contacts/ContactCreateSheet.tsx",
           "type": "registry:component"
         },
@@ -757,6 +793,46 @@
         },
         {
           "path": "src/components/atomic-crm/companies/AutocompleteCompanyInput.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/index.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/EnrollmentEventStats.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/EnrollContactDialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignStepEditor.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignStepCard.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignShow.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignList.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignEnrollmentsPanel.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignEdit.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/campaigns/CampaignCreate.tsx",
           "type": "registry:component"
         },
         {
