@@ -1,6 +1,7 @@
 import { useRecordContext } from "ra-core";
 import { CreateButton } from "@/components/admin/create-button";
 import { DataTable } from "@/components/admin/data-table";
+import { EditButton } from "@/components/admin/edit-button";
 import { ExportButton } from "@/components/admin/export-button";
 import { List } from "@/components/admin/list";
 import { SearchInput } from "@/components/admin/search-input";
@@ -56,6 +57,9 @@ export function SalesList() {
         <DataTable.Col source="email" />
         <DataTable.Col label={false}>
           <OptionsField />
+        </DataTable.Col>
+        <DataTable.Col label={false}>
+          <EditButton />
         </DataTable.Col>
       </DataTable>
     </List>
