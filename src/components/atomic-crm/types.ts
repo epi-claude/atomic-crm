@@ -210,6 +210,45 @@ export interface RAFile {
 
 export type AttachmentNote = RAFile;
 
+export type Segment = {
+  name: string;
+  description?: string | null;
+  filter_criteria: Record<string, unknown>;
+  created_at: string;
+  created_by?: Identifier | null;
+} & Pick<RaRecord, "id">;
+
+export type Campaign = {
+  name: string;
+  slug: string;
+  description?: string | null;
+  status: "draft" | "active" | "paused" | "archived";
+  created_at: string;
+  created_by?: Identifier | null;
+} & Pick<RaRecord, "id">;
+
+export type CampaignStep = {
+  campaign_id: Identifier;
+  step_number: number;
+  subject: string;
+  html_body: string;
+  delay_days: number;
+} & Pick<RaRecord, "id">;
+
+export type DripEnrollment = {
+  contact_id: Identifier;
+  campaign_id: Identifier;
+  step: number;
+  enrolled_at: string;
+  last_sent_at?: string | null;
+  completed_at?: string | null;
+  suppressed: boolean;
+  suppressed_reason?: string | null;
+  // joined from contacts_summary / campaigns
+  contact_name?: string;
+  campaign_name?: string;
+} & Pick<RaRecord, "id">;
+
 export interface LabeledValue {
   value: string;
   label: string;

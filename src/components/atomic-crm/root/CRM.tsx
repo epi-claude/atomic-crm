@@ -15,7 +15,9 @@ import { ForgotPasswordPage } from "@/components/supabase/forgot-password-page";
 import { SetPasswordPage } from "@/components/supabase/set-password-page";
 import { OAuthConsentPage } from "@/components/supabase/oauth-consent-page";
 
+import campaigns from "../campaigns";
 import companies from "../companies";
+import segments from "../segments";
 import contacts from "../contacts";
 import { Dashboard } from "../dashboard/Dashboard";
 import { MobileDashboard } from "../dashboard/MobileDashboard";
@@ -242,6 +244,10 @@ const DesktopAdmin = (props: CoreAdminProps) => {
         <Route path={SettingsPage.path} element={<SettingsPage />} />
         <Route path={ImportPage.path} element={<ImportPage />} />
       </CustomRoutes>
+      <Resource name="campaigns" {...campaigns} />
+      <Resource name="campaign_steps" />
+      <Resource name="drip_enrollments" />
+      <Resource name="segments" {...segments} />
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
       <Resource name="companies" {...companies} />
@@ -304,6 +310,10 @@ const MobileAdmin = (props: CoreAdminProps) => {
         </Resource>
         <Resource name="companies" show={CompanyShow} />
         <Resource name="tasks" list={MobileTasksList} />
+        <Resource name="campaigns" {...campaigns} />
+        <Resource name="campaign_steps" />
+        <Resource name="drip_enrollments" />
+        <Resource name="segments" {...segments} />
       </Admin>
     </PersistQueryClientProvider>
   );

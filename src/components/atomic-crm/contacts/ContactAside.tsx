@@ -13,6 +13,7 @@ import { AsideSection } from "../misc/AsideSection";
 import type { Contact } from "../types";
 import { ContactMergeButton } from "./ContactMergeButton";
 import { ExportVCardButton } from "./ExportVCardButton";
+import { ContactDripSection } from "./ContactDripSection";
 
 export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
   const record = useRecordContext<Contact>();
@@ -49,6 +50,10 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
           <TasksIterator />
         </ReferenceManyField>
         <AddTask />
+      </AsideSection>
+
+      <AsideSection title="Drip Campaigns">
+        <ContactDripSection />
       </AsideSection>
 
       {link !== "edit" && (

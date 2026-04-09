@@ -165,3 +165,9 @@ verify_jwt = false
 verify_jwt = false
 [functions.users]
 verify_jwt = false
+[functions.resend]
+verify_jwt = false
+[functions.drip-sender]
+verify_jwt = false
+[functions.unsubscribe]
+verify_jwt = false
